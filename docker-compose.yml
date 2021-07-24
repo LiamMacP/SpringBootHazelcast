@@ -6,7 +6,7 @@ services:
     ports:
       - 8080:8080
     environment:
-      - HAZELCAST_ENDPOINTS=hazelcast:5701
+      - HAZELCAST_ENDPOINTS=hazelcast
   hazelcast:
     image: hazelcast/hazelcast
     ports:

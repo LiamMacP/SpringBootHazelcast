@@ -5,17 +5,24 @@ import com.hazelcast.config.DiscoveryStrategyConfig;
 import com.hazelcast.kubernetes.HazelcastKubernetesDiscoveryStrategyFactory;
 import com.hazelcast.kubernetes.KubernetesProperties;
 import com.hazelcast.spi.properties.ClusterProperty;
+import com.liammacpherson.configuration.properties.HazelcastProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.Collections;
-
-import static com.liammacpherson.utils.PropertyHelper.propertyEquals;
+import static com.liammacpherson.utils.SystemPropertyHelper.propertyEquals;
 
 @Configuration
+@EnableConfigurationProperties(HazelcastProperties.class)
 public class HazelcastConfiguration {
 
     private final static String HAZELCAST_SERVICE_NAME = "service-hazelcast-server.default.svc.cluster.local";
+
+    private final HazelcastProperties hazelcastProperties;
+
+    public HazelcastConfiguration(HazelcastProperties hazelcastProperties) {
+        this.hazelcastProperties = hazelcastProperties;
+    }
 
     @Bean
     public ClientConfig clientConfig() {
@@ -26,7 +33,7 @@ public class HazelcastConfiguration {
             // Default IP address for local docker run is 172.17.0.2.
             clientConfig
                     .getNetworkConfig()
-                    .setAddresses(Collections.singletonList("172.17.0.2:5701"));
+                    .setAddresses(hazelcastProperties.getEndpoints());
         } else {
             HazelcastKubernetesDiscoveryStrategyFactory hazelcastKubernetesDiscoveryStrategyFactory
                     = new HazelcastKubernetesDiscoveryStrategyFactory();
