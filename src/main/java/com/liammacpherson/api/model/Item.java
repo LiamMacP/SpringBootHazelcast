@@ -3,7 +3,7 @@ package com.liammacpherson.api.model;
 import javax.persistence.*;
 
 @Entity
-public class Item {
+public class Item extends SerializableEntity {
 
     private long id;
     private String name;
